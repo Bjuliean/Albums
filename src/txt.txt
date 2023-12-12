@@ -1,0 +1,164 @@
+curl http://localhost:8080/albums
+
+curl -X "PUT" http://localhost:8080/albums/1 \
+--include \
+--header "Content-Type: application/json" \
+--request "PUT" \
+--data '{"title": "test"}'
+
+curl -X "DELETE" http://localhost:8080/albums/1
+
+`sudo docker run -it --name some-postgres -e POSTGRES_PASSWORD=pass -e POSTGRES_USER=user -e POSTGRES_DB=db -p 5432:5432 postgres`
+
+type ps struct {
+    db *sql.DB
+}
+
+
+sudo netstat -tulpn | grep :5432
+sudo kill -9 725
+
+ # - pgdata:/var/lib/postgres/data
+ # - ./assets/postgres/init.sql:/docker-entrypoint-initdb.d/1-schema.sql
+
+sudo docker exec -it 914f74441f27 psql -U user
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+package main
+
+import (
+	"database/sql"
+	"log"
+
+	_ "github.com/lib/pq"
+)
+
+type DBConfig struct {
+	Addr		string
+	Port		uint16
+	User		string
+	Password	string
+	DB			string
+}
+
+type Album struct {
+	ID		string		`json:"Album" db:"album"`
+	Title	string		`json:"title" db:"title"`
+	Artist	string		`json:"artist" db:"artist"`
+	Price	float64		`json:"price" db:"price"`
+}
+
+type Storage interface {
+	Create(newAlbum Album)
+	Read(id string) (*Album, bool)
+	Update(id string, newAlbum *Album) bool
+	Delete(id string) bool
+	ReadAll() []Album
+}
+
+type PostgresStorage struct {
+	db *sql.DB
+	cfg DBConfig
+}
+
+func NewPostgresStorage(cfg *DBConfig) (PostgresStorage, error) {
+	// var err error
+	// storage := PostgresStorage{}
+	// storage.cfg = *cfg
+	// connStr := fmt.Sprintf("user=%s password=%s host=%s port=%d dbname=%s sslmode=disable", cfg.User, cfg.Password, cfg.Addr, cfg.Port, cfg.DB)
+	// storage.db, err = sqlx.Open("postgres", connStr)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// err = storage.db.Ping()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// return &storage, nil
+	// storage := PostgresStorage{}
+	// connStr := fmt.Sprintf("user=%s password=%s host=%s port=%d dbname=%s sslmode=disable", cfg.User, cfg.Password, cfg.Addr, cfg.Port, cfg.DB)
+	// storage.db, _ = sqlx.Open("postgres", connStr)
+	// return &storage, nil
+
+	newstorage := PostgresStorage{}
+	var err error
+	newstorage.db, err = sql.Open("postgres", "user=user password=qwerty dbname=user sslmode=disable")
+	if err != nil {
+		return PostgresStorage{}, err
+	}
+	newstorage.cfg = *cfg
+	err = newstorage.db.Ping()
+	if err != nil {
+		log.Fatalf("error while connecting to db: %s", err.Error())
+	}
+	return newstorage, nil
+}
+
+func (p *PostgresStorage)Create(newAlbum Album) {
+
+}
+
+func (p *PostgresStorage)Read(id string) (*Album, bool) {
+	// rows, err := p.db.Query("SELECT * FROM %s WHERE id IN(%d)", p.cfg.DB, 1)
+	alb := Album{}
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	// defer rows.Close()
+	//intid, err := strconv.Atoi(id)
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	//err = p.db.Select(&alb, "SELECT * FROM %s WHERE id IN(%d)", p.cfg.DB, intid)
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	//p.db.Exec()
+	return &alb, true
+}
+
+func (p *PostgresStorage)ReadAll() []Album {
+	res := []Album{}
+	// rows, err := p.db.Query("SELECT id, title, artist, price FROM albums;")
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
+	// var singleAlbum Album
+	// 	if err := rows.Scan(singleAlbum.ID, singleAlbum.Title, singleAlbum.Artist, singleAlbum.Price); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	res = append(res, singleAlbum)
+	// 	fmt.Println(res)
+	// for rows.Next() {
+	// 	var singleAlbum Album
+	// 	if err := rows.Scan(singleAlbum.ID, singleAlbum.Title, singleAlbum.Artist, singleAlbum.Price); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	res = append(res, singleAlbum)
+	// }
+	res = []Album{
+		{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
+	}
+	return res
+}
+
+func (p *PostgresStorage)Update(id string, newAlbum *Album) bool {
+	return false
+}
+
+func (p *PostgresStorage)Delete(id string) bool {
+	return false
+}
