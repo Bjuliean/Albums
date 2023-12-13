@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -48,7 +49,15 @@ func (p *PostgresStorage)ConnectToDatabase(dbcfg *DBConfig) {
 	if err != nil {
 		panic(err.Error())
 	}
-	err = db.Ping()
+
+	for i := 0; i < 5; i++ {
+		err := db.Ping()
+		if err == nil {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+
 	if err != nil {
 		panic(err.Error())
 	}

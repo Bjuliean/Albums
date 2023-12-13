@@ -19,7 +19,6 @@ then
     done;
 
     echo "STARTING SERVER..."
-    sleep 1;
 else
     echo "\nInstallation cancelled\n"
 fi
