@@ -7,6 +7,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type DBConfig struct {
+	Host		string
+	Port		uint
+	User		string
+	Password	string
+	DBName		string
+	SSLMode		string
+}
+
 type Album struct {
 	ID		int			`json:"id" db:"id"`
 	Title	string		`json:"title" db:"title"`
@@ -15,7 +24,7 @@ type Album struct {
 }
 
 type Storage interface {
-	ConnectToDatabase()
+	ConnectToDatabase(dbcfg *DBConfig)
 	CloseConnection()
 	CreateAlbum(al *Album)
 	GetAlbums() []Album
@@ -32,8 +41,10 @@ func NewPostgresStorage() *PostgresStorage {
 	return &PostgresStorage{}
 }
 
-func (p *PostgresStorage)ConnectToDatabase() {
-	db, err := sql.Open("postgres", "user=user password=qwerty dbname=user sslmode=disable")
+func (p *PostgresStorage)ConnectToDatabase(dbcfg *DBConfig) {
+	datasrc := fmt.Sprintf("host=%s port=%d user=%s "+
+	"password=%s dbname=%s sslmode=%s", dbcfg.Host, dbcfg.Port, dbcfg.User, dbcfg.Password, dbcfg.DBName, dbcfg.SSLMode)
+	db, err := sql.Open("postgres", datasrc)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -88,6 +99,7 @@ func (p *PostgresStorage)DeleteAlbum(id int) {
 }
 
 func (p *PostgresStorage)UpdateAlbum(id int, al *Album) {
+	al.ID = id
 	p.DeleteAlbum(id)
 	p.CreateAlbum(al)
 }

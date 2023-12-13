@@ -1,27 +1,27 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	//"github.com/gin-gonic/gin"
 )
 
-var dataStorage Storage
-
 func main() {
-	// dbconfig := DBConfig{
-	// 	Addr: "0.0.0.0",
-	// 	Port: 5432,
-	// 	User: "user",
-	// 	Password: "qwerty",
-	// 	DB: "user",
-	// }
-	// dataStorage, err := NewPostgresStorage(&dbconfig)
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
+	dbconfig := DBConfig{
+		Host: "0.0.0.0",
+		Port: 5432,
+		User: "user",
+		Password: "qwerty",
+		DBName: "user",
+		SSLMode: "disable",
+	}
+
+	var dataStorage Storage
+	var handler RequestHandler
+	
 	dataStorage = NewPostgresStorage()
-	dataStorage.ConnectToDatabase()
+	dataStorage.ConnectToDatabase(&dbconfig)
 	defer dataStorage.CloseConnection()
-	router := InitRouter()
-	gin.SetMode("release")
+	handler = NewDefaultHandler(&dataStorage)
+	router := InitRouter(&handler)
+	//gin.SetMode("release")
 	router.Run(":8080")
 }
