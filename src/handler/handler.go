@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
+	logger "ful/RESTful/src/logs"
 	"ful/RESTful/src/storage"
 )
 
@@ -19,11 +21,13 @@ type RequestHandler interface {
 
 type DefaultHandler struct {
 	dataStorage *storage.Storage
+	logHandler *logger.Logger
 }
 
-func NewDefaultHandler(newStorage *storage.Storage) *DefaultHandler {
+func NewDefaultHandler(newStorage *storage.Storage, newLogHandler *logger.Logger) *DefaultHandler {
 	return &DefaultHandler{
 		dataStorage: newStorage,
+		logHandler: newLogHandler,
 	}
 }
 
@@ -35,6 +39,7 @@ func (d *DefaultHandler)GetAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if !IsIdExists(d.dataStorage, id) {
 		c.IndentedJSON(http.StatusNotFound, nil)
+		(*d.logHandler).WriteError(fmt.Sprintf("error: unknown album id: %d", id))
 		return
 	}
 	if err != nil {
@@ -100,5 +105,6 @@ func InitRouter(handler *RequestHandler) *gin.Engine {
 	router.GET("/albums/:id", (*handler).GetAlbum)
 	router.DELETE("/albums/:id", (*handler).DeleteAlbum)
 	router.PUT("/albums/:id", (*handler).UpdateAlbum)
+
 	return router
 }

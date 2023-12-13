@@ -1,8 +1,9 @@
 package main
 
-import(
-	"ful/RESTful/src/storage"
+import (
 	"ful/RESTful/src/handler"
+	logger "ful/RESTful/src/logs"
+	"ful/RESTful/src/storage"
 )
 
 func main() {
@@ -17,13 +18,18 @@ func main() {
 
 	var dataStorage storage.Storage
 	var reqHandler handler.RequestHandler
+	var logs logger.Logger
 	
+	logs = logger.NewLogrusLogger("./logs/logs.txt")
+	logs.CreateLogger()
+	defer logs.CloseLogger()
+
 	dataStorage = storage.NewPostgresStorage()
 	dataStorage.ConnectToDatabase(&dbconfig)
 	defer dataStorage.CloseConnection()
-	reqHandler = handler.NewDefaultHandler(&dataStorage)
+	reqHandler = handler.NewDefaultHandler(&dataStorage, &logs)
 	
 	router := handler.InitRouter(&reqHandler)
-	//gin.SetMode("release")
+	
 	router.Run(":8080")
 }
