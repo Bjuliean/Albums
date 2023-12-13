@@ -1,10 +1,12 @@
-package main
+package handler
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
+	"ful/RESTful/src/storage"
 )
 
 type RequestHandler interface {
@@ -16,10 +18,10 @@ type RequestHandler interface {
 }
 
 type DefaultHandler struct {
-	dataStorage *Storage
+	dataStorage *storage.Storage
 }
 
-func NewDefaultHandler(newStorage *Storage) *DefaultHandler {
+func NewDefaultHandler(newStorage *storage.Storage) *DefaultHandler {
 	return &DefaultHandler{
 		dataStorage: newStorage,
 	}
@@ -31,16 +33,25 @@ func (d *DefaultHandler)GetAlbums(c *gin.Context) {
 
 func (d *DefaultHandler)GetAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
+	if !IsIdExists(d.dataStorage, id) {
+		c.IndentedJSON(http.StatusNotFound, nil)
+		return
+	}
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
+		return
 	}
 	c.IndentedJSON(http.StatusOK, (*d.dataStorage).GetAlbum(id))
 }
 
 func (d *DefaultHandler)PostAlbum(c *gin.Context) {
-	newAlbum := Album{}
+	newAlbum := storage.Album{}
 	if err := c.BindJSON(&newAlbum); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
+		return
+	}
+	if IsIdExists(d.dataStorage, newAlbum.ID) {
+		c.IndentedJSON(http.StatusNotImplemented, nil)
 		return
 	}
 	(*d.dataStorage).CreateAlbum(&newAlbum)
@@ -51,17 +62,32 @@ func (d *DefaultHandler)DeleteAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
+		return
+	}
+	if !IsIdExists(d.dataStorage, id) {
+		c.IndentedJSON(http.StatusNotImplemented, nil)
+		return
 	}
 	(*d.dataStorage).DeleteAlbum(id)
 	c.IndentedJSON(http.StatusNoContent, nil)
 }
 
 func (d *DefaultHandler)UpdateAlbum(c *gin.Context) {
-	newAlbum := Album{}
+	newAlbum := storage.Album{}
 	if err := c.BindJSON(&newAlbum); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
 		return
 	}
+	correctID, err := strconv.Atoi(c.Request.URL.Path[len("/albums/"):])
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, nil)
+		return
+	}
+	if !IsIdExists(d.dataStorage, correctID) {
+		c.IndentedJSON(http.StatusNotFound, nil)
+		return
+	}
+	newAlbum.ID = correctID
 	(*d.dataStorage).UpdateAlbum(newAlbum.ID, &newAlbum)
 	c.IndentedJSON(http.StatusCreated, (*d.dataStorage).GetAlbum(newAlbum.ID))
 }

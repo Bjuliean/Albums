@@ -1,6 +1,6 @@
 CREATE TABLE albums
 (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title Varchar(255) NOT NULL,
     artist Varchar(255) NOT NULL,
     price Decimal

@@ -10,8 +10,4 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-
-      # - POSTGRES_PASSWORD=qwerty
-      # - POSTGRES_DB=db
-      # - POSTGRES_USER=user
+      - ../postgres/init.sql:/docker-entrypoint-initdb.d/init.sql

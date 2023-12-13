@@ -1,11 +1,12 @@
 package main
 
-import (
-	//"github.com/gin-gonic/gin"
+import(
+	"ful/RESTful/src/storage"
+	"ful/RESTful/src/handler"
 )
 
 func main() {
-	dbconfig := DBConfig{
+	dbconfig := storage.DBConfig{
 		Host: "0.0.0.0",
 		Port: 5432,
 		User: "user",
@@ -14,14 +15,15 @@ func main() {
 		SSLMode: "disable",
 	}
 
-	var dataStorage Storage
-	var handler RequestHandler
+	var dataStorage storage.Storage
+	var reqHandler handler.RequestHandler
 	
-	dataStorage = NewPostgresStorage()
+	dataStorage = storage.NewPostgresStorage()
 	dataStorage.ConnectToDatabase(&dbconfig)
 	defer dataStorage.CloseConnection()
-	handler = NewDefaultHandler(&dataStorage)
-	router := InitRouter(&handler)
+	reqHandler = handler.NewDefaultHandler(&dataStorage)
+	
+	router := handler.InitRouter(&reqHandler)
 	//gin.SetMode("release")
 	router.Run(":8080")
 }

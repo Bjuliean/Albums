@@ -1,4 +1,4 @@
-SRC=main.go storage.go handler.go
+SRC=main.go
 APPNAME=program
 
 all: clean
