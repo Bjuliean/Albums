@@ -8,3 +8,8 @@ all: clean
 clean:
 	rm -rf $(APPNAME)
 	cd assembling && sudo docker-compose stop
+
+push:
+	cd .. && git add *
+	git commit -m "autopush"
+	git push origin develop

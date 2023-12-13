@@ -11,7 +11,7 @@ read symbol
 if [ $symbol = 'y' ] || [ $symbol = 'Y' ] 
 then
     echo "RELEASING PORTS..."
-    #./cleanports.sh
+    ./cleanports.sh
     echo "STARTING POSTGRES CONTAINER..."
     sudo docker-compose up -d
     until [ "`docker inspect -f {{.State.Running}} pq_album_container`"=="true" ]; do
