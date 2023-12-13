@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -10,7 +11,7 @@ import (
 type Logger interface {
 	CreateLogger()
 	CloseLogger()
-	WriteError(err string)
+	WriteError(err string, ip string)
 }
 
 type LogrusLogger struct {
@@ -27,13 +28,16 @@ func NewLogrusLogger(lpath string) *LogrusLogger {
 }
 
 func (l *LogrusLogger)CreateLogger() {
-	file, _ := os.OpenFile(l.logsPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, os.ModePerm)
+	file, err := os.OpenFile(l.logsPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, os.ModePerm)
+	if err != nil {
+		panic(err.Error())
+	}
 	l.logsFile = file
 	l.logsController = &logrus.Logger{
 		Out: l.logsFile,
 		Level: logrus.ErrorLevel,
 		Formatter: &easy.Formatter{
-			TimestampFormat: "2001-01-04 15:04:05",
+			TimestampFormat: "2006-01-02 15:04:05",
 			LogFormat: "[%lvl%]: %time% - %msg%",
 		},
 	}
@@ -43,6 +47,6 @@ func (l *LogrusLogger)CloseLogger() {
 	l.logsFile.Close()
 }
 
-func (l *LogrusLogger)WriteError(err string) {
-	l.logsController.Error(err + "\n")
+func (l *LogrusLogger)WriteError(err string, ip string) {
+	l.logsController.Error(fmt.Sprintf("%s - %s\n", ip, err))
 }
