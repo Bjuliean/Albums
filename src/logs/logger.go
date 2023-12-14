@@ -1,3 +1,6 @@
+// The package provides an interface 
+// for working with the logger.
+
 package logger
 
 import (

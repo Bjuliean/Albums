@@ -1,3 +1,6 @@
+// The package is responsible 
+// for routing requests and logging errors.
+
 package handler
 
 import (
@@ -74,7 +77,7 @@ func (d *DefaultHandler)DeleteAlbum(c *gin.Context) {
 		return
 	}
 	if !IsIdExists(d.dataStorage, id) {
-		c.IndentedJSON(http.StatusNotImplemented, nil)
+		c.IndentedJSON(http.StatusNotFound, nil)
 		(*d.logHandler).WriteError(fmt.Sprintf("DELETE: non-existent id: %d", id), c.RemoteIP())
 		return
 	}

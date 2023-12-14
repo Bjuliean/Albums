@@ -1,3 +1,6 @@
+// A package that provides an interface to a data store 
+// in the form of a postgres database.
+
 package storage
 
 import (
