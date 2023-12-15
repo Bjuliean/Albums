@@ -33,7 +33,7 @@ func initGin() (*gin.Engine, *logger.Logger, *storage.Storage) {
 	dataStorage.ConnectToDatabase(&dbconfig)
 	reqHandler = NewDefaultHandler(&dataStorage, &logs)
 
-	return InitRouter(&reqHandler), &logs, &dataStorage
+	return InitRouter(&reqHandler, &reqHandler), &logs, &dataStorage
 }
 
 func freeResources(logs *logger.Logger, db *storage.Storage) {

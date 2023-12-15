@@ -17,7 +17,7 @@ func main() {
 	}
 
 	var dataStorage storage.Storage
-	var reqHandler handler.RequestHandler
+	var reqHandler, reqViewHandler handler.RequestHandler
 	var logs logger.Logger
 	
 	logs = logger.NewLogrusLogger("./logs/logs.txt")
@@ -28,8 +28,9 @@ func main() {
 	dataStorage.ConnectToDatabase(&dbconfig)
 	defer dataStorage.CloseConnection()
 	reqHandler = handler.NewDefaultHandler(&dataStorage, &logs)
+	reqViewHandler = handler.NewViewHandler(&dataStorage)
 	
-	router := handler.InitRouter(&reqHandler)
+	router := handler.InitRouter(&reqHandler, &reqViewHandler)
 	
 	router.Run(":8080")
 }

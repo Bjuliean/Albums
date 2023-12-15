@@ -7,13 +7,8 @@ all: clean db
 	go run $(SRC)
 
 clean:
-	rm -rf $(APPNAME) $(COVFILE)
+	rm -rf logs/*.txt $(APPNAME) $(COVFILE)
 	cd assembling && sudo docker-compose down
-
-push:
-	cd .. && git add *
-	git commit -m "autopush"
-	git push origin develop
 
 test: clean db
 	go test $(TESTS)

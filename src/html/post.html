@@ -1,0 +1,12 @@
+<div><p>[<a href="/albums/view">Albums List</a>]</p></div>
+<div><p>[<a href="/albums/edit">Create New List</a>]</p></div>
+
+<h1>Creating</h1>
+
+<form action="/albums/edit" method="POST">
+<div>id <textarea name="fid" rows="1" cols="20">{{printf "%d" .ID}}</textarea></div>
+<div>title <textarea name="ftitle" rows="1" cols="20">{{printf "%s" .Title}}</textarea></div>
+<div>artist <textarea name="fartist" rows="1" cols="20">{{printf "%s" .Artist}}</textarea></div>
+<div>price <textarea name="fprice" rows="1" cols="20">{{printf "%.2f" .Price}}</textarea></div>
+<div><input type="submit" value="Save"></div>
+</form>
