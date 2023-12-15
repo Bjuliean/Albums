@@ -48,3 +48,30 @@ deletes the container with the database, cleans ports 8080 and 5432.
 To run the program, just execute the all goal inside the src folder. After this, 
 the program will prepare a container with the database and ask you to clear the ports. 
 The database will run in the background, the server will output gin-debug to the console.
+
+### --II--
+![img](misc/4.png)
+![img](misc/a.png)
+![img](misc/5.png)
+
+To interact with the program, 2 options are provided - JSON and HTML. 
+JSON has /albums/:id addresses. 
+HTML works via /albums/view/:id, /albums/edit/:id, /albums/delete/:id.
+
+### --III--
+![img](misc/6.png)
+![img](misc/7.png)
+
+An example of creating a new album.
+
+### --IV--
+![img](misc/8.png)
+![img](misc/9.png)
+
+An example of updating an album.
+
+### --V--
+![img](misc/10.png)
+![img](misc/11.png)
+
+An example of deleting an album.
