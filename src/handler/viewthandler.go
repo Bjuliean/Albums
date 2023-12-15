@@ -1,7 +1,6 @@
 package handler
 
 import (
-	//"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,21 +19,21 @@ func NewViewHandler(newStorage *storage.Storage) *ViewHandler {
 	}
 }
 
-func (v *ViewHandler)GetAlbums(c *gin.Context) {
+func (v *ViewHandler) GetAlbums(c *gin.Context) {
 	showHeader(c)
-	
+
 	a := (*v.dataStorage).GetAlbums()
 	for _, item := range a {
 		c.HTML(http.StatusOK, "view.html", gin.H{
-			"ID": item.ID,
-			"Title": item.Title,
+			"ID":     item.ID,
+			"Title":  item.Title,
 			"Artist": item.Artist,
-			"Price": item.Price,
+			"Price":  item.Price,
 		})
 	}
 }
 
-func (v *ViewHandler)GetAlbum(c *gin.Context) {
+func (v *ViewHandler) GetAlbum(c *gin.Context) {
 	showHeader(c)
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -48,21 +47,21 @@ func (v *ViewHandler)GetAlbum(c *gin.Context) {
 	}
 	a := (*v.dataStorage).GetAlbum(id)
 	c.HTML(http.StatusOK, "view.html", gin.H{
-		"ID": a.ID,
-		"Title": a.Title,
+		"ID":     a.ID,
+		"Title":  a.Title,
 		"Artist": a.Artist,
-		"Price": a.Price,
+		"Price":  a.Price,
 	})
 }
 
-func (v *ViewHandler)PostAlbum(c *gin.Context) {
+func (v *ViewHandler) PostAlbum(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		c.HTML(http.StatusOK, "post.html", gin.H{
-			"ID": 0,
-			"Title": "",
+			"ID":     0,
+			"Title":  "",
 			"Artist": "",
-			"Price": 0.0,
+			"Price":  0.0,
 		})
 	case "POST":
 		al, err := formAlbum(c)
@@ -88,14 +87,14 @@ func formAlbum(c *gin.Context) (*storage.Album, error) {
 		return nil, err
 	}
 	return &storage.Album{
-		ID: id,
-		Title: title,
+		ID:     id,
+		Title:  title,
 		Artist: artist,
-		Price: price,
+		Price:  price,
 	}, nil
 }
 
-func (v *ViewHandler)DeleteAlbum(c *gin.Context) {
+func (v *ViewHandler) DeleteAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
@@ -109,20 +108,20 @@ func (v *ViewHandler)DeleteAlbum(c *gin.Context) {
 	c.IndentedJSON(http.StatusNoContent, nil)
 }
 
-func (v *ViewHandler)UpdateAlbum(c *gin.Context) {
+func (v *ViewHandler) UpdateAlbum(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			c.Redirect(http.StatusNotModified, "/albums/view")
 		}
- 
+
 		a := (*v.dataStorage).GetAlbum(id)
 		c.HTML(http.StatusOK, "put.html", gin.H{
-			"ID": a.ID,
-			"Title": a.Title,
+			"ID":     a.ID,
+			"Title":  a.Title,
 			"Artist": a.Artist,
-			"Price": a.Price,
+			"Price":  a.Price,
 		})
 	case "POST":
 		al, err := formAlbum(c)
@@ -130,7 +129,7 @@ func (v *ViewHandler)UpdateAlbum(c *gin.Context) {
 			c.Redirect(http.StatusNotModified, "/albums/view")
 		}
 		(*v.dataStorage).UpdateAlbum(al.ID, al)
-		c.Redirect(http.StatusPermanentRedirect, "/albums/view")
+		c.Redirect(http.StatusSeeOther, "/albums/view")
 	default:
 		c.Redirect(http.StatusNotModified, "/albums/view")
 	}

@@ -13,21 +13,21 @@ import (
 
 type DefaultHandler struct {
 	dataStorage *storage.Storage
-	logHandler *logger.Logger
+	logHandler  *logger.Logger
 }
 
 func NewDefaultHandler(newStorage *storage.Storage, newLogHandler *logger.Logger) *DefaultHandler {
 	return &DefaultHandler{
 		dataStorage: newStorage,
-		logHandler: newLogHandler,
+		logHandler:  newLogHandler,
 	}
 }
 
-func (d *DefaultHandler)GetAlbums(c *gin.Context) {
+func (d *DefaultHandler) GetAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, (*d.dataStorage).GetAlbums())
 }
 
-func (d *DefaultHandler)GetAlbum(c *gin.Context) {
+func (d *DefaultHandler) GetAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if !IsIdExists(d.dataStorage, id) {
 		c.IndentedJSON(http.StatusNotFound, nil)
@@ -42,7 +42,7 @@ func (d *DefaultHandler)GetAlbum(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, (*d.dataStorage).GetAlbum(id))
 }
 
-func (d *DefaultHandler)PostAlbum(c *gin.Context) {
+func (d *DefaultHandler) PostAlbum(c *gin.Context) {
 	newAlbum := storage.Album{}
 	if err := c.BindJSON(&newAlbum); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
@@ -58,7 +58,7 @@ func (d *DefaultHandler)PostAlbum(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
 
-func (d *DefaultHandler)DeleteAlbum(c *gin.Context) {
+func (d *DefaultHandler) DeleteAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
@@ -74,7 +74,7 @@ func (d *DefaultHandler)DeleteAlbum(c *gin.Context) {
 	c.IndentedJSON(http.StatusNoContent, nil)
 }
 
-func (d *DefaultHandler)UpdateAlbum(c *gin.Context) {
+func (d *DefaultHandler) UpdateAlbum(c *gin.Context) {
 	newAlbum := storage.Album{}
 	if err := c.BindJSON(&newAlbum); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})

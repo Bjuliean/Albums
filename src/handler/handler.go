@@ -1,4 +1,4 @@
-// The package is responsible 
+// The package is responsible
 // for routing requests and logging errors.
 
 package handler

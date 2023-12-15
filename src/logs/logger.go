@@ -1,4 +1,4 @@
-// The package provides an interface 
+// The package provides an interface
 // for working with the logger.
 
 package logger
@@ -18,9 +18,9 @@ type Logger interface {
 }
 
 type LogrusLogger struct {
-	logsController  *logrus.Logger
-	logsPath 		string
-	logsFile		*os.File
+	logsController *logrus.Logger
+	logsPath       string
+	logsFile       *os.File
 }
 
 func NewLogrusLogger(lpath string) *LogrusLogger {
@@ -30,26 +30,26 @@ func NewLogrusLogger(lpath string) *LogrusLogger {
 	}
 }
 
-func (l *LogrusLogger)CreateLogger() {
+func (l *LogrusLogger) CreateLogger() {
 	file, err := os.OpenFile(l.logsPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, os.ModePerm)
 	if err != nil {
 		panic(err.Error())
 	}
 	l.logsFile = file
 	l.logsController = &logrus.Logger{
-		Out: l.logsFile,
+		Out:   l.logsFile,
 		Level: logrus.ErrorLevel,
 		Formatter: &easy.Formatter{
 			TimestampFormat: "2006-01-02 15:04:05",
-			LogFormat: "[%lvl%]: %time% - %msg%",
+			LogFormat:       "[%lvl%]: %time% - %msg%",
 		},
 	}
 }
 
-func (l *LogrusLogger)CloseLogger() {
+func (l *LogrusLogger) CloseLogger() {
 	l.logsFile.Close()
 }
 
-func (l *LogrusLogger)WriteError(err string, ip string) {
+func (l *LogrusLogger) WriteError(err string, ip string) {
 	l.logsController.Error(fmt.Sprintf("%s - %s\n", ip, err))
 }
