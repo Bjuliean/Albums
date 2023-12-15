@@ -29,8 +29,10 @@ func InitRouter(jsonhandler *RequestHandler, htmlhandler *RequestHandler) *gin.E
 	router.POST("albums/edit", (*htmlhandler).PostAlbum)
 	router.GET("albums/edit/:id", (*htmlhandler).UpdateAlbum)
 	router.POST("albums/edit/:id", (*htmlhandler).UpdateAlbum)
+	router.GET("albums/delete/:id", (*htmlhandler).DeleteAlbum)
+	router.POST("albums/delete/:id", (*htmlhandler).DeleteAlbum)
 
-	router.LoadHTMLFiles("./html/view.html", "./html/header.html", "./html/post.html", "./html/put.html")
+	router.LoadHTMLFiles("./html/view.html", "./html/header.html", "./html/post.html", "./html/put.html", "./html/delete.html")
 
 	return router
 }

@@ -97,15 +97,23 @@ func formAlbum(c *gin.Context) (*storage.Album, error) {
 func (v *ViewHandler) DeleteAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message:": "bad request"})
-		return
+		c.Redirect(http.StatusNotModified, "/albums/view")
 	}
-	if !IsIdExists(v.dataStorage, id) {
-		c.IndentedJSON(http.StatusNotFound, nil)
-		return
+	switch c.Request.Method {
+	case "GET":
+		a := (*v.dataStorage).GetAlbum(id)
+		c.HTML(http.StatusOK, "delete.html", gin.H{
+			"ID":     a.ID,
+			"Title":  a.Title,
+			"Artist": a.Artist,
+			"Price":  a.Price,
+		})
+	case "POST":
+		(*v.dataStorage).DeleteAlbum(id)
+		c.Redirect(http.StatusSeeOther, "/albums/view")
+	default:
+		c.Redirect(http.StatusNotModified, "/albums/view")
 	}
-	(*v.dataStorage).DeleteAlbum(id)
-	c.IndentedJSON(http.StatusNoContent, nil)
 }
 
 func (v *ViewHandler) UpdateAlbum(c *gin.Context) {

@@ -1,0 +1,10 @@
+<div><p>[<a href="/albums/view">Albums List</a>]</p></div>
+<div><p>[<a href="/albums/edit">Create New List</a>]</p></div>
+
+<form action="/albums/delete/{{.ID}}" method="POST">
+<div>ID: {{.ID}}</div>
+<div>Title: {{.Title}}</div>
+<div>Artist: {{.Artist}}</div>
+<div>Price: {{.Price}}</div>
+<div><input type="submit" value="Remove"></div>
+</form>

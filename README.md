@@ -41,4 +41,10 @@ deletes the container with the database, cleans ports 8080 and 5432.
 ## Examples
 
 ### --I--
+![img](misc/1.png)
+![img](misc/2.png)
+![img](misc/3.png)
 
+To run the program, just execute the all goal inside the src folder. After this, 
+the program will prepare a container with the database and ask you to clear the ports. 
+The database will run in the background, the server will output gin-debug to the console.
